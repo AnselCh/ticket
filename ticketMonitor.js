@@ -1,4 +1,16 @@
+// ==UserScript==
+// @name         TicketPlus Auto Ticket Selector
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Automatically select 1 ticket and proceed to next step on TicketPlus, with infinite refresh if no tickets are available
+// @author       You
+// @match        https://ticketplus.com.tw/order/82410088f8dae3b61a0395f347944405/d21c86f5a0d5e854b24740de31acc0e5
+// @grant        none
+// ==/UserScript==
+
 (function() {
+    'use strict';
+
     // Function to check and interact with the ticket selection element
     function checkAndSelectTickets() {
         // Target the plus button for ticket selection
@@ -16,6 +28,8 @@
                 const nextButton = document.querySelector('button.accent-blue span.v-btn__content');
                 if (nextButton && nextButton.textContent.includes('下一步')) {
                     nextButton.click();
+                    // Stop further execution since we clicked Next
+                    return;
                 }
             } else {
                 // If no tickets are available, click the refresh button
@@ -28,11 +42,5 @@
     }
 
     // Run the check every 1 second
-    const interval = setInterval(checkAndSelectTickets, 1000);
-
-    // Stop the interval after 5 minutes (300,000 ms) to prevent infinite running
-    setTimeout(() => {
-        clearInterval(interval);
-        console.log('Ticket monitoring stopped after 5 minutes.');
-    }, 300000);
+    setInterval(checkAndSelectTickets, 1000);
 })();
