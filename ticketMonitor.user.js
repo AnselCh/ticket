@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         TicketPlus Auto Ticket Selector
 // @namespace    http://tampermonkey.net/
-// @version      1.1
-// @description  Automatically select 1 ticket and proceed to next step on TicketPlus, with infinite refresh if no tickets are available
+// @version      1.2
+// @description  Automatically select 1 ticket and proceed to next step on TicketPlus with natural click events, with infinite refresh if no tickets are available
 // @author       You
 // @match        https://ticketplus.com.tw/order/*
 // @grant        none
@@ -11,9 +11,22 @@
 (function() {
     'use strict';
 
+    // Function to simulate a natural click event
+    function simulateClick(element) {
+        if (element) {
+            const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            element.dispatchEvent(clickEvent);
+            console.log('Simulated click on element:', element);
+        }
+    }
+
     // Function to check and interact with the ticket selection element
     function checkAndSelectTickets() {
-        console.log('Checking ticket availability...');
+        console.log('Checking ticket availability at', new Date().toLocaleTimeString());
 
         // Target the plus button for ticket selection
         const plusButton = document.querySelector('button.v-btn--fab.light-primary-2[data-limit="true"]');
@@ -27,8 +40,8 @@
 
             if (availableTickets > 0) {
                 console.log('Selecting 1 ticket...');
-                // Click the plus button to select 1 ticket
-                plusButton.click();
+                // Simulate click on the plus button to select 1 ticket
+                simulateClick(plusButton);
 
                 // Wait briefly to ensure ticket selection is registered
                 setTimeout(() => {
@@ -36,7 +49,7 @@
                     const nextButton = document.querySelector('button.accent-blue span.v-btn__content');
                     if (nextButton && nextButton.textContent.includes('下一步')) {
                         console.log('Clicking Next button...');
-                        nextButton.click();
+                        simulateClick(nextButton.parentElement); // Click the parent button element
                         // Stop further execution since we clicked Next
                         return;
                     } else {
@@ -49,7 +62,7 @@
                 const refreshButton = document.querySelector('button.float-btn.accent-blue');
                 if (refreshButton) {
                     console.log('Clicking refresh button...');
-                    refreshButton.click();
+                    simulateClick(refreshButton);
                 } else {
                     console.log('Refresh button not found, reloading page...');
                     // Fallback: reload the page if refresh button is not found
@@ -64,7 +77,7 @@
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM fully loaded, starting ticket check...');
-        // Run the check every 2 seconds (increased from 1s to reduce server load)
+        // Run the check every 2 seconds
         setInterval(checkAndSelectTickets, 2000);
     });
 
