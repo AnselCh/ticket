@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  Automatically select 1 ticket and proceed to next step on TicketPlus, with infinite refresh if no tickets are available
 // @author       You
-// @match        https://ticketplus.com.tw/order/82410088f8dae3b61a0395f347944405/d21c86f5a0d5e854b24740de31acc0e5
+// @match        https://ticketplus.com.tw/order/*
 // @grant        none
 // ==/UserScript==
 
